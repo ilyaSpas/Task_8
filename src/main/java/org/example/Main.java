@@ -1,17 +1,24 @@
 package org.example;
 
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 public class Main {
     public static void main(String[] args) {
-        //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
-        // to see how IntelliJ IDEA suggests fixing it.
-        System.out.printf("Hello and welcome!");
+        List<Student> students = Arrays.asList(
+                new Student("Student1", Map.of("Math", 90, "Physics", 85)),
+                new Student("Student2", Map.of("Math", 95, "Physics", 88)),
+                new Student("Student3", Map.of("Math", 88, "Chemistry", 92)),
+                new Student("Student4", Map.of("Physics", 78, "Chemistry", 85))
+        );
 
-        for (int i = 1; i <= 5; i++) {
-            //TIP Press <shortcut actionId="Debug"/> to start debugging your code. We have set one <icon src="AllIcons.Debugger.Db_set_breakpoint"/> breakpoint
-            // for you, but you can always add more by pressing <shortcut actionId="ToggleLineBreakpoint"/>.
-            System.out.println("i = " + i);
-        }
+        //Используйте Parallel Stream для обработки данных и создания Map, где ключ - предмет, а значение - средняя оценка по всем студентам.
+        //Выведите результат: общую Map с средними оценками по всем предметам.
+        Map<String, Double> averageScores = students.parallelStream()
+                .flatMap(student -> student.getGrades().entrySet().parallelStream())
+                .collect(Collectors.groupingBy(Map.Entry::getKey, Collectors.averagingDouble(Map.Entry::getValue)));
+
+        System.out.println(averageScores);
     }
 }
